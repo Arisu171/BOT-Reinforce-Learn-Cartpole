@@ -1,0 +1,29 @@
+# Cau hinh mac dinh cua REINFORCE cho CartPole-v1.
+# Cac gia tri nay duoc dung khi chay: python -m libraries.reinforce --tag base
+
+algo: reinforce
+tag: base
+
+# Kien truc mang
+hidden: 128
+
+# Huan luyen
+total_steps: 150000
+lr: 0.003
+gamma: 0.99
+
+# Entropy bonus
+ent_coef: 0.005
+
+# Cap nhat
+episodes_per_update: 1
+no_normalize: false
+
+# Danh gia
+eval_every: 5000
+eval_episodes: 20
+
+# Moi truong
+train_variant: v0
+sigma: 0.05
+

@@ -1,0 +1,40 @@
+# Cau hinh mac dinh cua Double DQN cho CartPole-v1.
+# Cac gia tri nay duoc dung khi chay: python -m libraries.dqn --tag base
+# Thay doi cho ablation: tao file rieng voi tag tuong ung.
+
+algo: dqn
+tag: base
+
+# Kien truc mang
+hidden: 128
+
+# Huan luyen
+total_steps: 150000
+lr: 0.001
+gamma: 0.99
+
+# Replay buffer
+buffer: 50000
+batch: 64
+learning_starts: 1000
+
+# Epsilon-greedy
+eps_end: 0.05
+eps_decay: 10000
+
+# Target network
+update: soft       # "soft" hoac "hard"
+tau: 0.005
+hard_every: 500
+
+# Double DQN
+no_double: false
+
+# Danh gia
+eval_every: 5000
+eval_episodes: 20
+
+# Moi truong
+train_variant: v0
+sigma: 0.05
+
