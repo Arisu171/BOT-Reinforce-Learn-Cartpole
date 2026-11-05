@@ -12,6 +12,11 @@ import pytest
 
 from libraries.stream import CartPoleStreamEngine, PolicyHandler, get_embedded_html
 
+DQN_CKPT = "models/dqn_base_seed0_best.pt"
+REINFORCE_CKPT = "models/reinforce_base_seed0_best.pt"
+HAS_DQN_CKPT = os.path.isfile(DQN_CKPT)
+HAS_REINFORCE_CKPT = os.path.isfile(REINFORCE_CKPT)
+
 
 def test_policy_handler_heuristic():
     """Verify PolicyHandler with heuristic policy produces valid action and probabilities.
@@ -44,15 +49,16 @@ def test_policy_handler_random():
     assert probs == [0.5, 0.5]
 
 
+@pytest.mark.skipif(not HAS_DQN_CKPT, reason=f"missing checkpoint {DQN_CKPT}")
 def test_policy_handler_dqn():
     """Verify PolicyHandler with DQN checkpoint predicts actions and returns Q-values.
 
     Input:  None.
     Output: assertion passes without exception.
-    Flow:   instantiate PolicyHandler("dqn", "models/dqn_base_seed0_best.pt"),
+    Flow:   instantiate PolicyHandler("dqn", DQN_CKPT),
             predict on observation, assert q_vals is a list of two floats.
     """
-    ph = PolicyHandler("dqn", "models/dqn_base_seed0_best.pt")
+    ph = PolicyHandler("dqn", DQN_CKPT)
     obs = np.zeros(4, dtype=np.float32)
     action, q_vals, probs = ph.predict(obs)
     assert action in (0, 1)
@@ -168,6 +174,7 @@ def test_embedded_html_contains_essential_elements():
     assert "prob-bar-right" in html
 
 
+@pytest.mark.skipif(not HAS_REINFORCE_CKPT, reason=f"missing checkpoint {REINFORCE_CKPT}")
 def test_policy_handler_mismatched_algo_autodetect():
     """Verify PolicyHandler auto-detects true algorithm when given mismatched checkpoint.
 
@@ -175,7 +182,7 @@ def test_policy_handler_mismatched_algo_autodetect():
     Output: assertion passes without exception.
     Flow:   pass algo='dqn' but point to reinforce checkpoint, verify true algo auto-detected.
     """
-    ph = PolicyHandler("dqn", "models/reinforce_base_seed0_best.pt")
+    ph = PolicyHandler("dqn", REINFORCE_CKPT)
     assert ph.algo == "reinforce"
     obs = np.zeros(4, dtype=np.float32)
     act, q, probs = ph.predict(obs)
@@ -188,14 +195,19 @@ def test_get_available_models_categorized():
 
     Input:  None.
     Output: assertion passes without exception.
-    Flow:   instantiate engine, call get_available_models, assert keys exist.
+    Flow:   instantiate engine, call get_available_models, assert keys exist;
+            require non-empty lists only when local checkpoints are present.
     """
     engine = CartPoleStreamEngine()
     models = engine.get_available_models()
     assert "dqn" in models
     assert "reinforce" in models
-    assert len(models["dqn"]) > 0
-    assert len(models["reinforce"]) > 0
+    assert isinstance(models["dqn"], list)
+    assert isinstance(models["reinforce"], list)
+    if HAS_DQN_CKPT:
+        assert len(models["dqn"]) > 0
+    if HAS_REINFORCE_CKPT:
+        assert len(models["reinforce"]) > 0
     engine.stop()
 
 
