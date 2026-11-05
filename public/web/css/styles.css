@@ -1,0 +1,29 @@
+:root {
+      --bg-dark: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #38bdf8;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: #f8fafc;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    .gauge-container {
+      position: relative;
+      background: #334155;
+      height: 12px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .gauge-needle {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: white;
+      transition: left 0.05s ease-out;
+      transform: translateX(-50%);
+    }
