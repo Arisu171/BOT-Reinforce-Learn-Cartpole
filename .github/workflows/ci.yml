@@ -27,9 +27,9 @@ jobs:
 
       - name: Run unit tests
         run: |
-          python -m pytest tests/test_dqn_units.py -v
+          python -m pytest tests/test_dqn_units.py tests/test_stream.py -v
 
-      - name: Run gate verification
+      - name: Run structural gates (no local artifacts required)
         run: |
-          python scripts/check_gate.py all
-
+          python scripts/check_gate.py 0
+          python scripts/check_gate.py 6
